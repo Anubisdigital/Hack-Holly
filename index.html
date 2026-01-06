@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Hack‑Holly | Black Ops Terminal</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>⚠ BLACK OPS CYBER TERMINAL ⚠</h1>
+<p class="warning">SIMULATION ONLY — NO REAL SYSTEMS</p>
+
+<button onclick="start()">EXECUTE OPERATION</button>
+
+<div id="terminal"></div>
+
+<script>
+function start() {
+  const t = document.getElementById("terminal");
+  t.innerHTML = "";
+
+  fetch("engine.php")
+    .then(r => r.body)
+    .then(stream => {
+      const reader = stream.getReader();
+      const decoder = new TextDecoder();
+
+      function pump() {
+        reader.read().then(({done, value}) => {
+          if (done) return;
+          t.innerHTML += decoder.decode(value);
+          t.scrollTop = t.scrollHeight;
+          pump();
+        });
+      }
+      pump();
+    })
+    .catch(() => {
+      t.innerHTML = "❌ BACKEND OFFLINE — OPERATION ABORTED";
+    });
+}
+</script>
+
+</body>
+</html>
